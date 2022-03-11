@@ -3,6 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 // #include <stb_image.h>
+#include<string.h>
 #include <iostream>
 #include <vector>
 #include <array>

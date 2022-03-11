@@ -12,7 +12,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # set(Vulkan_THIRD_INCLUDE_PATH "C:\\VulkanSDK\\1.2.198.1\\Third-Party\\Include")
     find_package(Vulkan REQUIRED)
     include_directories(C:\\VulkanSDK\\1.2.198.1\\Include)
-    # include_directories(${VULKAN_INCLUDE_PATH})
 
     include_directories("glfw-3.3.6\\include")
     add_subdirectory(glfw-3.3.6)
@@ -20,7 +19,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     
-
     set(IMGUI_DIR D:/approot/imgui)
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -35,11 +33,26 @@ message(STATUS "Configuring on/for ${CMAKE_SYSTEM_NAME}")
 # include_directories(${VULKAN_INCLUDE_PATH})
 
 include_directories(${IMGUI_DIR} ${IMGUI_DIR}/backends ..)
-
-# add_library(MyFileSystem MyFileSystem.cpp)
 add_executable(fstest MyFileSystem.cpp)
 
 add_executable(bookmanager bookmanager.cpp ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp ${IMGUI_DIR}/backends/imgui_impl_vulkan.cpp ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_demo.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp)
 
-target_link_libraries(fstest glfw)
-target_link_libraries(bookmanager glfw Vulkan)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(bookmanager
+    -lglfw3
+    -lvulkan
+    -ldl
+    -lGL
+    -lrt
+    -lm
+    -lXrandr
+    -lXi
+    -lX11
+    -lpthread
+    -lXinerama
+    -lXcursor
+    )
+else()
+    target_link_libraries(fstest glfw)
+    target_link_libraries(bookmanager glfw Vulkan)
+endif()
