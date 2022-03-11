@@ -37,13 +37,10 @@ static void fsTest()
         path1.append("D:").append(SEP).append("approot");
         std::cout<<path1<<std::endl;
     }
-    
-    //
     {
         std::filesystem::path root{"D:\\"};
         std::filesystem::path dir{"approot"};
         std::filesystem::path chaos{"chaos"};
-
         std::filesystem::path target=root/dir/chaos;
         std::cout<<target<<std::endl;
         
