@@ -206,7 +206,40 @@ struct MyFileManagerInfo
 };
 #endif
 
+struct DeepSearcher_std
+{
+    std::vector<fs::directory_entry> filevec;
+    struct 
+    {
+        bool operator()(fs::directory_entry f1,fs::directory_entry f2)
+        {
+            return f1.path().filename()<f2.path().filename();
+        }
+    } customLess;
 
+    void deepSearch(const std::string& dirname, const std::string& keystring)
+    {
+        filevec.clear();
+        std::queue<fs::directory_entry> dirqueue;
+        dirqueue.push(fs::directory_entry{dirname});
+        while(!dirqueue.empty())
+        {
+            auto currentdir=dirqueue.front();
+            dirqueue.pop();
+            fs::directory_iterator list(currentdir);
+            for(auto& it:list)
+            {
+                if(it.path().filename().string()[0]=='.') continue;
+                if(it.is_directory()) dirqueue.push(it);
+                else if(Duality::Dstring(it.path().filename().string()).toUpper().find(Duality::Dstring(keystring).toUpper())!=std::string::npos)
+                {
+                    filevec.push_back(it);
+                }   
+            }
+        }
+        std::sort(filevec.begin(),filevec.end(),customLess);
+    }
+};
 
 
 struct MyFileManagerInfo_std

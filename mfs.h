@@ -8,9 +8,9 @@ const std::string SEP="/";
 // using namespace std::filesystem;
 namespace fs=std::filesystem;
 
-static void directoryTest()
+static void directoryTest(std::string rootpath)
 {
-    fs::path rootDir{"D:\\"};
+    fs::path rootDir{rootpath};
     if(!fs::exists(rootDir)) return;
     fs::directory_entry entry(rootDir);//文件入口
     if(entry.status().type()==fs::file_type::directory) std::cout<<"this is a directory!"<<std::endl;
@@ -18,6 +18,12 @@ static void directoryTest()
     for(auto& it:list)
     {
         std::cout<<it.path().filename()<<std::endl;
+        std::cout<<it.path().string()<<std::endl;
+        std::cout<<it.path().relative_path()<<std::endl;
+        std::cout<<it.path().parent_path()<<std::endl;
+        std::cout<<it.path().root_directory()<<std::endl;
+        std::cout<<it.path().root_name()<<std::endl;
+        std::cout<<std::endl;
     }
     
 }

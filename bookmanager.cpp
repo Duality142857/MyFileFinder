@@ -21,7 +21,9 @@ public:
     MyFileManager::MyFileManagerInfo fmInfo;
     MyFileManager::MyFileManagerInfo_std fmInfo_std;
 
-    MyFileManager::DeepSearcher deepSearcher;
+    // MyFileManager::DeepSearcher deepSearcher;
+    MyFileManager::DeepSearcher_std deepSearcher;
+
     void treeSearch()
     {
         for(auto& mf:fmInfo.filevec)
@@ -305,19 +307,20 @@ public:
             {
                 for(auto& x:deepSearcher.filevec)
                 {
-                    if(ImGui::Button(x.filename.c_str()))
+                    if(ImGui::Button(x.path().filename().c_str()))
                     {
-                        auto filedir=x.path+"/"+x.filename;
+                        
+                        // auto filedir=x.path+"/"+x.filename;
                         pid_t pid=fork();
                         if(pid==-1) perror("fork");
                         if(!pid)
                         {
-                            int ret=execlp("xdg-open","xdg-open",filedir.c_str(),NULL);
+                            int ret=execlp("xdg-open","xdg-open",x.path().c_str(),NULL);
                             if(ret==-1) perror("execvp");
                         }
                     }
                     ImGui::SameLine();
-                    HelpMarker(x.path.c_str());
+                    HelpMarker(x.path().c_str());
                     
                 }
                 ImGui::TreePop();
