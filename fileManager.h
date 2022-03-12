@@ -221,6 +221,8 @@ struct DeepSearcher_std
     {
         filevec.clear();
         std::queue<fs::directory_entry> dirqueue;
+        fs::directory_entry ent{dirname};
+        if(ent.status().type()!=fs::file_type::directory) return;
         dirqueue.push(fs::directory_entry{dirname});
         while(!dirqueue.empty())
         {
@@ -270,7 +272,7 @@ struct MyFileManagerInfo_std
         fs::directory_iterator list(currentDir);
         for(auto& it:list)
         {
-            std::cout<<it.path().filename()<<std::endl;
+            // std::cout<<it.path().filename()<<std::endl;
             filevec.push_back(it);
             // fs::directory_entry ent(entry/it.path().filename());
         }

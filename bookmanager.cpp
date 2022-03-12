@@ -18,47 +18,12 @@ public:
             ImGui::EndTooltip();
         }
     }
-    MyFileManager::MyFileManagerInfo fmInfo;
+
     MyFileManager::MyFileManagerInfo_std fmInfo_std;
 
     // MyFileManager::DeepSearcher deepSearcher;
     MyFileManager::DeepSearcher_std deepSearcher;
-
-    void treeSearch()
-    {
-        for(auto& mf:fmInfo.filevec)
-        {
-            
-            //mf.ifdir==true || 
-            if((mf.ifdir==true || Duality::Dstring(mf.filename).toUpper().find(Duality::Dstring(searchString).toUpper())!=std::string::npos) && mf.filename.find(".")!=0)
-            {
-                if(mf.ifdir==false)
-                {
-                    if(ImGui::Button(mf.filename.c_str()))
-                    {
-                        auto filedir=fmInfo.currentDir+mf.filename;
-                        pid_t pid=fork();
-                        if(pid==-1) perror("fork");
-                        if(!pid)
-                        {
-                            int ret=execlp("xdg-open","xdg-open",filedir.c_str(),NULL);
-                            if(ret==-1) perror("execvp");
-                        }
-                    }
-                }
-
-                else if(ImGui::TreeNode(mf.filename.c_str()))
-                {
-                    std::string olddir=fmInfo.currentDir;
-                    fmInfo.setCurrentDir(olddir+mf.filename+'/');
-                    treeSearch();
-                    fmInfo.setCurrentDir(olddir);
-                    ImGui::TreePop();
-                }
-            }
-        }
-    }
-    
+  
     void treeSearch_std()
     {
         for(auto& mf:fmInfo_std.filevec)
@@ -83,16 +48,13 @@ public:
                 {
                     auto olddir=fmInfo_std.currentDir;
                     fmInfo_std.setCurrentDir(olddir/mf.path().filename());
-                    treeSearch();
+                    treeSearch_std();
                     fmInfo_std.setCurrentDir(olddir);
                     ImGui::TreePop();
                 }
             }
         }
     }
-    
-
-    
     
     virtual void drawFrame()
     {
@@ -245,7 +207,7 @@ public:
         ImGui::Checkbox("search",&searchState);
         if(ImGui::TreeNode("filebrower"))
         {
-            treeSearch();
+            treeSearch_std();
             ImGui::TreePop();
         }
         ImGui::End();
@@ -309,7 +271,7 @@ public:
                 {
                     if(ImGui::Button(x.path().filename().c_str()))
                     {
-                        
+#ifdef __linux__                 
                         // auto filedir=x.path+"/"+x.filename;
                         pid_t pid=fork();
                         if(pid==-1) perror("fork");
@@ -318,6 +280,7 @@ public:
                             int ret=execlp("xdg-open","xdg-open",x.path().c_str(),NULL);
                             if(ret==-1) perror("execvp");
                         }
+#endif
                     }
                     ImGui::SameLine();
                     HelpMarker(x.path().c_str());
@@ -356,7 +319,8 @@ public:
         
         while (!glfwWindowShouldClose(window)) 
         {
-            fmInfo.setCurrentDir(rootDir);
+            // fmInfo.setCurrentDir(rootDir);
+            fmInfo_std.setCurrentDir(rootDir);
             auto framestart=mytime::now();
             glfwPollEvents();
             drawFrame();
