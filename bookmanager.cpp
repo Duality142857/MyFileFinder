@@ -2,6 +2,7 @@
 #include"dstring/dstring.h"
 #include"fileManager.h"
 #include"time/mytime.h"
+#include<thread>
 
 class BookManager: public VulkanGraphicsBase
 {
@@ -23,18 +24,27 @@ public:
 
     // MyFileManager::DeepSearcher deepSearcher;
     MyFileManager::DeepSearcher_std deepSearcher;
+
+    // std::vector<std::thread> threads;
+
+    static void openfile(const std::string& filename)
+    {
+        
+        system((std::string("open ")+filename).c_str());
+    }
   
     void treeSearch_std()
     {
         for(auto& mf:fmInfo_std.filevec)
         {
-            if((mf.is_directory() || Duality::Dstring(mf.path().filename()).toUpper().find(Duality::Dstring(searchString).toUpper())!=std::string::npos) && std::string(mf.path().filename()).find(".")!=0)
+            if((mf.is_directory() || Duality::Dstring(mf.path().filename().string()).toUpper().find(Duality::Dstring(searchString).toUpper())!=std::string::npos) && std::string(mf.path().filename().string()).find(".")!=0)
             {
                 if(!mf.is_directory())
                 {
-                    if(ImGui::Button(mf.path().filename().c_str()))
+                    if(ImGui::Button(mf.path().filename().string().c_str()))
                     {
                         auto filedir=fmInfo_std.currentDir/mf.path().filename();
+#ifdef __linux__
                         pid_t pid=fork();
                         if(pid==-1) perror("fork");
                         if(!pid)
@@ -42,14 +52,18 @@ public:
                             int ret=execlp("xdg-open","xdg-open",filedir.c_str(),NULL);
                             if(ret==-1) perror("execvp");
                         }
+#else
+                        std::thread t(openfile,filedir.string());
+                        t.detach();
+#endif
                     }
                 }
-                else if(ImGui::TreeNode(mf.path().filename().c_str()))
+                else if(ImGui::TreeNode(mf.path().filename().string().c_str()))
                 {
                     auto olddir=fmInfo_std.currentDir;
-                    fmInfo_std.setCurrentDir(olddir/mf.path().filename());
+                    fmInfo_std.setCurrentDir((olddir/mf.path().filename()).string());
                     treeSearch_std();
-                    fmInfo_std.setCurrentDir(olddir);
+                    fmInfo_std.setCurrentDir(olddir.string());
                     ImGui::TreePop();
                 }
             }
@@ -222,7 +236,11 @@ public:
             ImGui::Begin("filesearcher",&t_open,ImGuiWindowFlags_MenuBar);
             // searchAllFiles();
             static char keyword[50]="pdf";
+#ifdef __linux__
             static char searchdir[100]="/home/number/Nutstore Files/Nutstore/";
+#else
+            static char searchdir[100]="D:\\approot\\";
+#endif
             ImGui::PushItemWidth(io.DisplaySize.x*0.4);
             
             // ImGui::Text(keyword);
@@ -269,7 +287,7 @@ public:
             {
                 for(auto& x:deepSearcher.filevec)
                 {
-                    if(ImGui::Button(x.path().filename().c_str()))
+                    if(ImGui::Button(x.path().filename().string().c_str()))
                     {
 #ifdef __linux__                 
                         // auto filedir=x.path+"/"+x.filename;
@@ -283,7 +301,7 @@ public:
 #endif
                     }
                     ImGui::SameLine();
-                    HelpMarker(x.path().c_str());
+                    HelpMarker(x.path().string().c_str());
                     
                 }
                 ImGui::TreePop();
@@ -309,7 +327,11 @@ public:
     // std::string searchString;
     // std::string rootDir;
     char searchString[100]="pdf";
+#ifdef __linux__
     char rootDir[100]="/home/number/Nutstore Files/Nutstore/";
+#else
+    char rootDir[100]="D:\\";
+#endif
     void mainLoop()
     {
         // searchString.resize(100);

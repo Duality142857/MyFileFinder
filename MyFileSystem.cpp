@@ -23,5 +23,6 @@ int main(int argc, char** argv)
     // glfwDestroyWindow(window);
     // glfwTerminate();
     std::cout<<"asdf"<<std::endl;
-    directoryTest("/home/number/approot/");
+    // directoryTest("/home/number/approot/");
+    errortest("D:/approot");
 }

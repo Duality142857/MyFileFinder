@@ -6,11 +6,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    # set(BUILD_SHARED_LIBS TRUE)
+    set(Vulkan_BIN "C:\\VulkanSDK\\1.2.198.1\\Bin")
     set(Vulkan_SDK "C:\\VulkanSDK\\1.2.198.1")
-    set(Vulkan_LIBRARY "C:\\VulkanSDK\\1.2.198.1\\Lib")
+    set(Vulkan_LIBRARY "C:\\VulkanSDK\\1.2.198.1\\Lib\\vulkan-1.lib")
     set(Vulkan_INCLUDE_PATH "C:\\VulkanSDK\\1.2.198.1\\Include")
     # set(Vulkan_THIRD_INCLUDE_PATH "C:\\VulkanSDK\\1.2.198.1\\Third-Party\\Include")
     find_package(Vulkan REQUIRED)
+    
+
+    # find_library(ws2_32_LIBRARY_PATH ws2_32)
+    # add_executable(Executive ${exec_src})
+    # target_link_libraries(Executive ${ws2_32_LIBRARY_PATH})
+
     include_directories(C:\\VulkanSDK\\1.2.198.1\\Include)
 
     include_directories("glfw-3.3.6\\include")
@@ -53,6 +62,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     -lXcursor
     )
 else()
+    message("windows")
     target_link_libraries(fstest glfw)
-    target_link_libraries(bookmanager glfw Vulkan)
+    target_link_libraries(bookmanager glfw Vulkan::Vulkan)
 endif()

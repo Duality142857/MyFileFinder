@@ -1,4 +1,6 @@
 #include<filesystem>
+#include<iostream>
+#include<string>
 #ifdef _WIN32
 const std::string SEP="\\";
 #else
@@ -7,6 +9,24 @@ const std::string SEP="/";
 
 // using namespace std::filesystem;
 namespace fs=std::filesystem;
+
+static void errortest(const std::string& path)
+{
+    fs::path p{path};
+    
+    fs::directory_entry ent(p);
+    std::cout<<ent.path()<<std::endl;
+
+
+    for(auto& it:fs::directory_iterator(ent))
+    {
+        std::cout<<"it "<<std::endl;//FANTASY VOCALOID - 泽野弘之 - 【RE：CREATORS】GRAVITY WALL【FV-VER】（FANTASY VOCALOID remix）
+        // std::wcout<<it.path().c_str()<<std::endl;
+        auto cstr=it.path().u16string().c_str();
+        std::wcout<<cstr<<std::endl;
+    }
+
+}
 
 static void directoryTest(std::string rootpath)
 {

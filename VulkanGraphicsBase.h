@@ -174,7 +174,7 @@ public:
         init_info.Device = device;
         init_info.QueueFamily = queueFamilyIndices.graphicsFamily.value();
         init_info.Queue = graphicsQueue;
-        init_info.PipelineCache = nullptr;
+        init_info.PipelineCache = NULL;//nullptr
         init_info.DescriptorPool = imguiPool;
         init_info.Subpass = 0;
         init_info.MinImageCount = 2;
@@ -186,7 +186,7 @@ public:
         
         //!upload fonts 上传字体
         {
-            font1=io.Fonts->AddFontFromFileTTF("/home/number/game/SourceHanSerifCN-VF.ttf",20.0f,NULL,io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+            font1=io.Fonts->AddFontFromFileTTF("D:\\approot\\data\\fonts\\SourceHanSerifCN-VF.ttf",20.0f,NULL,io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
             
             vkResetCommandPool(device,commandPool,0);
             VkCommandBufferBeginInfo beginInfo={};
