@@ -32,18 +32,28 @@ public:
         
         system((std::string("open ")+filename).c_str());
     }
-  
+    // template<class STRING_TYPE>
     void treeSearch_std()
     {
+        // std::cout<<"enter "<<std::endl;
         for(auto& mf:fmInfo_std.filevec)
-        {
-            if((mf.is_directory() || Duality::Dstring(mf.path().filename().string()).toUpper().find(Duality::Dstring(searchString).toUpper())!=std::string::npos) && std::string(mf.path().filename().string()).find(".")!=0)
+        {   
+            std::cout<<"start proc "<<std::endl;
+            auto key_wstring=Duality::toLower<std::wstring>(strconverter.from_bytes(std::string(searchString)));
+
+            auto path=mf.path();
+            auto path_wstring=Duality::toLower(path.wstring());
+            // auto filename_wstring=path.wstring();
+            if((mf.is_directory() || path_wstring.find(key_wstring)!=path_wstring.npos) && path.wstring().find(L".")!=0)
+            // if((mf.is_directory() || Duality::Dstring(mf.path().filename().string()).toUpper().find(Duality::Dstring(searchString).toUpper())!=std::string::npos) && std::string(mf.path().filename().string()).find(".")!=0)
             {
                 if(!mf.is_directory())
                 {
-                    if(ImGui::Button(mf.path().filename().string().c_str()))
+                    if(ImGui::Button(strconverter.to_bytes(path.filename().wstring()).c_str()))
+                    // if(ImGui::Button(mf.path().filename().string().c_str()))
                     {
-                        auto filedir=fmInfo_std.currentDir/mf.path().filename();
+                        // auto filedir=fmInfo_std.currentDir/mf.path().filename();
+                        auto filedir=mf.path();
 #ifdef __linux__
                         pid_t pid=fork();
                         if(pid==-1) perror("fork");
@@ -58,13 +68,22 @@ public:
 #endif
                     }
                 }
-                else if(ImGui::TreeNode(mf.path().filename().string().c_str()))
+                else 
+                // else if(ImGui::TreeNode(mf.path().filename().string().c_str()))
                 {
-                    auto olddir=fmInfo_std.currentDir;
-                    fmInfo_std.setCurrentDir((olddir/mf.path().filename()).string());
-                    treeSearch_std();
-                    fmInfo_std.setCurrentDir(olddir.string());
-                    ImGui::TreePop();
+                    if(ImGui::TreeNode(strconverter.to_bytes(path.filename().wstring()).c_str()))    
+                    {
+                        auto olddir=fmInfo_std.currentDir;
+                        // fmInfo_std.setCurrentDir((olddir/mf.path().filename()).string());
+                        fmInfo_std.setCurrentDir(path);
+
+                        treeSearch_std();
+                        // fmInfo_std.setCurrentDir(olddir.string());
+                        fmInfo_std.setCurrentDir(olddir);
+                        // std::cout<<"end gui frame "<<std::endl<<std::endl;
+                        ImGui::TreePop();
+                    }
+
                 }
             }
         }
@@ -177,6 +196,8 @@ public:
 
     void guiFrame()
     {
+        // std::cout<<"begin gui frame "<<std::endl;
+
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -225,7 +246,8 @@ public:
             ImGui::TreePop();
         }
         ImGui::End();
-        
+
+
         
         if(searchState)
         {
@@ -323,6 +345,8 @@ public:
 
         
         ImGui::Render();
+        // std::cout<<"end gui frame "<<std::endl<<std::endl;
+
     }
     // std::string searchString;
     // std::string rootDir;

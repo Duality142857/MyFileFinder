@@ -22,8 +22,9 @@ static void errortest(const std::string& path)
     {
         std::cout<<"it "<<std::endl;//FANTASY VOCALOID - 泽野弘之 - 【RE：CREATORS】GRAVITY WALL【FV-VER】（FANTASY VOCALOID remix）
         // std::wcout<<it.path().c_str()<<std::endl;
-        auto cstr=it.path().u16string().c_str();
-        std::wcout<<cstr<<std::endl;
+        // auto cstr=it.path().u16string().c_str();
+        // std::cout<<it.path().string()<<std::endl;
+        wprintf(L"%s\n",it.path().wstring().c_str());
     }
 
 }

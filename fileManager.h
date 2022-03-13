@@ -258,9 +258,9 @@ struct MyFileManagerInfo_std
     fs::path currentDir;
     std::vector<fs::directory_entry> filevec;
 
-    void setCurrentDir(const std::string& dirname)
+    void setCurrentDir(const fs::path& p)
     {
-        currentDir=dirname;
+        currentDir=p;
         updateFileVec();
         std::sort(filevec.begin(),filevec.end(),customLess);
     }
