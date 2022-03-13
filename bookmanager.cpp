@@ -35,12 +35,10 @@ public:
     // template<class STRING_TYPE>
     void treeSearch_std()
     {
-        // std::cout<<"enter "<<std::endl;
         for(auto& mf:fmInfo_std.filevec)
         {   
-            std::cout<<"start proc "<<std::endl;
+            
             auto key_wstring=Duality::toLower<std::wstring>(strconverter.from_bytes(std::string(searchString)));
-
             auto path=mf.path();
             auto path_wstring=Duality::toLower(path.wstring());
             // auto filename_wstring=path.wstring();
@@ -49,6 +47,7 @@ public:
             {
                 if(!mf.is_directory())
                 {
+                    // std::cout<<"button"<<std::endl;
                     if(ImGui::Button(strconverter.to_bytes(path.filename().wstring()).c_str()))
                     // if(ImGui::Button(mf.path().filename().string().c_str()))
                     {
@@ -71,7 +70,9 @@ public:
                 else 
                 // else if(ImGui::TreeNode(mf.path().filename().string().c_str()))
                 {
-                    if(ImGui::TreeNode(strconverter.to_bytes(path.filename().wstring()).c_str()))    
+                    auto name=strconverter.to_bytes(path.filename().wstring()).c_str();
+                    // std::cout<<"name "<<name<<std::endl;
+                    if(ImGui::TreeNode(name)) 
                     {
                         auto olddir=fmInfo_std.currentDir;
                         // fmInfo_std.setCurrentDir((olddir/mf.path().filename()).string());
@@ -354,7 +355,7 @@ public:
 #ifdef __linux__
     char rootDir[100]="/home/number/Nutstore Files/Nutstore/";
 #else
-    char rootDir[100]="D:\\";
+    char rootDir[100]="D:\\CloudMusic\\";
 #endif
     void mainLoop()
     {
@@ -392,6 +393,7 @@ int main()
     // std::cout<<ds.toLower()<<std::endl;
     // std::cout<<ds.toUpper()<<std::endl;
 
+    setlocale(LC_ALL,"zh-CN");
 
     BookManager app;
     app.setWindowSize(1440,1096);
